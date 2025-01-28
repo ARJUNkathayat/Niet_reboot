@@ -1,9 +1,22 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Header from './Header'
+import {checkValidData} from "../Utils/validate"
 
 const Login = () => {
 
   const [isSignIn,setisSignIn] = useState(true);
+
+  const email = useRef(null)
+  const password = useRef(null)
+  const[errorMessage,seterrorMessage] = useState(null);
+  const handleButtonClick = ()=>{
+    console.log(email)
+
+      const message =  checkValidData(email.current.value,password.current.value)
+      seterrorMessage(message)
+  }
+
+
     
 const handleform = ()=>{
         setisSignIn(!isSignIn);
@@ -16,7 +29,7 @@ const handleform = ()=>{
         <img className="bg-gradient-to-b from-gray-800 to-black " src="https://assets.nflxext.com/ffe/siteui/vlv3/7a8c0067-a424-4e04-85f8-9e25a49a86ed/web/IN-en-20250120-TRIFECTA-perspective_860a95da-c386-446e-af83-fef8ddd80803_large.jpg"
   alt='backround-image'/>
   </div>
-  <form className="bg-black bg-opacity-75 px-16 pt-10 rounded-lg shadow-md w-[27rem] h-[40rem] mx-auto absolute my-36 left-0 right-0">
+  <form onSubmit={(e)=> e.preventDefault()} className="bg-black bg-opacity-75 px-16 pt-10 rounded-lg shadow-md w-[27rem] h-[40rem] mx-auto absolute my-36 left-0 right-0">
         <div className="mb-4">
           <h1 className='text-white text-3xl p-2 mb-3.5 font-bold'>{isSignIn ? "Sign In":"Sign Up"}</h1>
 
@@ -26,20 +39,21 @@ const handleform = ()=>{
             className="w-full p-2 rounded bg-gray-800 text-white placeholder-gray-500 focus:outline-none mb-5"
           />)}
 
-          <input
+          <input ref={email}
             type="email"
             placeholder="Email or Mobile Number"
             className="w-full p-2 rounded bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
           />
         </div>
         <div className="mb-4">
-          <input
+          <input ref={password}
             type="password"
             placeholder="Password"
             className="w-full p-2 rounded bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
           />
         </div>
-        <button
+        <p className='text-red-600 mb-1.5 text-l '>{errorMessage}</p>
+        <button onClick={handleButtonClick}
           type="submit"
           className="w-full py-2 bg-red-600 hover:bg-red-700 rounded text-white font-semibold"
         >

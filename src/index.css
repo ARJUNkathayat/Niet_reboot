@@ -1,2 +1,13 @@
 @import "tailwindcss";
-
+/* Reset margins and paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure body takes full viewport height */
+  body, html, #root {
+    height: 100%;
+  }
+  
