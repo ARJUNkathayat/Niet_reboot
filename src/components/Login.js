@@ -1,19 +1,59 @@
 import React, { useRef, useState } from 'react'
 import Header from './Header'
 import {checkValidData} from "../Utils/validate"
+import {  createUserWithEmailAndPassword ,signInWithEmailAndPassword} from "firebase/auth";
+import {auth} from "../Utils/fireBase"
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
 
   const [isSignIn,setisSignIn] = useState(true);
+  const navigate = useNavigate();
 
   const email = useRef(null)
   const password = useRef(null)
   const[errorMessage,seterrorMessage] = useState(null);
   const handleButtonClick = ()=>{
-    console.log(email)
-
       const message =  checkValidData(email.current.value,password.current.value)
       seterrorMessage(message)
+      if(message !=null) return
+
+      if(!isSignIn){
+        //sign up logic
+        createUserWithEmailAndPassword(auth, email.current.value,password.current.value)
+  .then((userCredential) => {
+    // Signed up 
+    const user = userCredential.user;
+    console.log(user)
+    navigate("/browse")
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    seterrorMessage(errorCode,errorMessage)
+    // ..
+  });
+
+      }else{
+
+        signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    console.log(user)
+    navigate("/browse")
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code; 
+    if(errorCode==="auth/invalid-credential"){
+      seterrorMessage("Check Your Email and Password Again")
+    }  
+  });
+
+
+      }
   }
 
 
