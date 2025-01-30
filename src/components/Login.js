@@ -1,19 +1,70 @@
 import React, { useRef, useState } from 'react'
 import Header from './Header'
 import {checkValidData} from "../Utils/validate"
-import {  createUserWithEmailAndPassword ,signInWithEmailAndPassword} from "firebase/auth";
+import {  createUserWithEmailAndPassword ,signInWithEmailAndPassword ,updateProfile} from "firebase/auth";
 import {auth} from "../Utils/fireBase"
 import { useNavigate } from 'react-router-dom';
+import { addUser } from '../Utils/userSlice';
+import { useDispatch } from 'react-redux';
+import { avtar_URL, loginBackgroundImage } from '../Utils/constants';
 
 const Login = () => {
 
   const [isSignIn,setisSignIn] = useState(true);
   const navigate = useNavigate();
-
+  const name= useRef(null)
   const email = useRef(null)
   const password = useRef(null)
   const[errorMessage,seterrorMessage] = useState(null);
-  const handleButtonClick = ()=>{
+  const dispatch = useDispatch()
+
+  const handleButtonClick = () => {
+    const message = checkValidData(email.current.value, password.current.value)
+    seterrorMessage(message)
+    if (message != null) return
+
+    if (!isSignIn) {
+      // Sign Up Logic
+      createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+        .then((userCredential) => {
+          const user = userCredential.user;
+
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: avtar_URL
+          }).then(() => {
+            // ✅ Save user details in Redux
+                 const { uid,  displayName,photoURL } = auth;
+                  dispatch(addUser({ uid:uid,  displayName:displayName,photoURL:photoURL }));
+           
+          }).catch((error) => seterrorMessage(error.message));
+        })
+        .catch((error) => seterrorMessage(error.message));
+
+    } else {
+      // Sign In Logic
+      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+        .then((userCredential) => {
+          const user = userCredential.user;
+
+          // ✅ Save user details in Redux
+          dispatch(addUser({
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL
+          }));
+
+          
+        })
+        .catch((error) => {
+          if (error.code === "auth/invalid-credential") {
+            seterrorMessage("Check Your Email and Password Again");
+          }
+        });
+    }
+  }
+
+  /*const handleButtonClick = ()=>{
       const message =  checkValidData(email.current.value,password.current.value)
       seterrorMessage(message)
       if(message !=null) return
@@ -24,8 +75,21 @@ const Login = () => {
   .then((userCredential) => {
     // Signed up 
     const user = userCredential.user;
-    console.log(user)
-    navigate("/browse")
+
+    
+updateProfile(user, {
+  displayName: name.current.value, photoURL: "https://example.com/jane-q-user/profile.jpg"
+}).then(() => {
+  // Profile updated!
+  // ...
+  navigate("/browse")
+}).catch((error) => {
+  // An error occurred
+  // ...
+  seterrorMessage(error.message)
+});
+ 
+  
     // ...
   })
   .catch((error) => {
@@ -54,7 +118,7 @@ const Login = () => {
 
 
       }
-  }
+  }*/
 
 
     
@@ -66,14 +130,13 @@ const handleform = ()=>{
     <div>
 <Header/>
 <div className='absolute'>
-        <img className="bg-gradient-to-b from-gray-800 to-black " src="https://assets.nflxext.com/ffe/siteui/vlv3/7a8c0067-a424-4e04-85f8-9e25a49a86ed/web/IN-en-20250120-TRIFECTA-perspective_860a95da-c386-446e-af83-fef8ddd80803_large.jpg"
-  alt='backround-image'/>
+        <img className="bg-gradient-to-b from-gray-800 to-black " src={loginBackgroundImage}alt='backround-image'/>
   </div>
   <form onSubmit={(e)=> e.preventDefault()} className="bg-black bg-opacity-75 px-16 pt-10 rounded-lg shadow-md w-[27rem] h-[40rem] mx-auto absolute my-36 left-0 right-0">
         <div className="mb-4">
           <h1 className='text-white text-3xl p-2 mb-3.5 font-bold'>{isSignIn ? "Sign In":"Sign Up"}</h1>
 
-            {!isSignIn&&(<input
+            {!isSignIn&&(<input ref={name}
             type="text"
             placeholder="Full Name"
             className="w-full p-2 rounded bg-gray-800 text-white placeholder-gray-500 focus:outline-none mb-5"

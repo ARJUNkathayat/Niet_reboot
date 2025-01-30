@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import {  onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from 'react-redux';
 import { addUser, removeUser } from '../Utils/userSlice';
@@ -9,16 +9,20 @@ import Browse from './Browse';
 
 const Body = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+     const unsubscribe=onAuthStateChanged(auth, (user) => {
       if (user) {
-        const { uid, email, displayName } = user;
-        dispatch(addUser({ uid, email, displayName }));
+        const { uid, email, displayName,photoURL } = user;
+        dispatch(addUser({ uid:uid, email:email, displayName:displayName,photoURL:photoURL }));
+        navigate("/browse")
       } else {
         dispatch(removeUser());
+        navigate("/")
       }
-    });
+    })
+    return ()=> unsubscribe()
   }, []);
 
   return (
