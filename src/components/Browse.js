@@ -7,6 +7,8 @@ import { removeUser } from '../Utils/userSlice';
 import {  logo } from '../Utils/constants';
 import useNowPlayingMovies from '../Hooks/useNowPlayingMovies';
 import BrowseHeader from './BrowseHeader';
+import MainContainer from './MainContainer';
+import SecondaryContainer from './SecondaryContainer';
 
 const Browse = () => {
 
@@ -16,6 +18,8 @@ useNowPlayingMovies()
   return (
     <div>
      <BrowseHeader/>
+     <MainContainer/>
+     <SecondaryContainer/>
       
       </div>
   )
