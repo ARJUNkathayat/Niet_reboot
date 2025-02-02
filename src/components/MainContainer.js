@@ -11,7 +11,7 @@ const MainContainer = () => {
    
   return (
 
-    <div className="relative h-[37rem] w-full">
+    <div className="relative h-[40rem] w-full pt-24">
     <VideoBackground movie_id={id} />
     <VideoTitle title={original_title} overview={overview} />
   </div>
