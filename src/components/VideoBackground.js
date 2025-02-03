@@ -6,7 +6,7 @@ const VideoBackground = ({ movie_id }) => {
     useGetMovieTrailer({ movie_id });
 
     return (
-        <div className="absolute top-0 left-0 w-full h-full -z-10 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[46rem] -z-10 overflow-hidden">
             {trailId ? (
                 <iframe
                     className="absolute top-0 left-0 w-[200%] h-[200%] sm:w-[150%] sm:h-[150%]"

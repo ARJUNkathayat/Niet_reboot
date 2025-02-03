@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import {  signOut } from "firebase/auth";
-import { auth } from '../Utils/fireBase';
-import { removeUser } from '../Utils/userSlice';
-import {  logo } from '../Utils/constants';
+import {  useSelector } from 'react-redux'
+
 import useNowPlayingMovies from '../Hooks/useNowPlayingMovies';
 import BrowseHeader from './BrowseHeader';
 import MainContainer from './MainContainer';
@@ -19,7 +15,7 @@ useNowPlayingMovies()
     <div>
      <BrowseHeader/>
      <MainContainer/>
-     <SecondaryContainer/>
+     <SecondaryContainer />
       
       </div>
   )
