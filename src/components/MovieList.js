@@ -2,13 +2,13 @@ import React from 'react'
 import MovieCard from './MovieCard';
 
 const MovieList = ({title,movies}) => {
-    console.log(movies);
+    
 
   return (
     <div>
         <div>
         <h1>{title}</h1>
-            <div className='flex overflow-x-auto space-x-4 py-12'>
+            <div className='flex overflow-x-auto space-x-4 py-6 [&::-webkit-scrollbar]:hidden'>
             {movies?.map((movie, index) => (
                     <MovieCard 
                         key={index}

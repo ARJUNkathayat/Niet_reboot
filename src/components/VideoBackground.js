@@ -9,7 +9,7 @@ const VideoBackground = ({ movie_id }) => {
         <div className="absolute top-0 left-0 w-full h-[46rem] -z-10 overflow-hidden">
             {trailId ? (
                 <iframe
-                    className="absolute top-0 left-0 w-[200%] h-[200%] sm:w-[150%] sm:h-[150%]"
+                    className="absolute top-0 left-0 w-[200%] h-[900%] sm:w-[150%] sm:h-[150%]"
                     src={`https://www.youtube.com/embed/${trailId?.key}?autoplay=1&mute=1&loop=1&playlist=${trailId?.key}`}
                     title="YouTube video player"
                     allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

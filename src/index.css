@@ -11,3 +11,7 @@
     height: 100%;
   }
   
+.scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+}
+  
