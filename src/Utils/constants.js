@@ -10,3 +10,4 @@ export const API_OPTIONS={
   }
 };
  export const CDN_IMG_POS="https://image.tmdb.org/t/p/w500"
+export const OpenAi_Key = "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"

@@ -1,8 +1,8 @@
 import { OpenAI } from "openai";
 
-const openai = new OpenAI({
-  apiKey: "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", // Direct API Key (Unsafe)
-  dangerouslyAllowBrowser: true, // Required for browser usage
+const Client = new OpenAI({
+  apiKey: "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",
+    dangerouslyAllowBrowser: true, // Required for browser usage
 });
 
-export default openai;
+export default Client;
