@@ -1,29 +1,57 @@
-import React, { useRef } from "react";
-import Client from "../Utils/OpenAi"; // Ensure Client is correctly initialized
+import React, { useRef, useState } from "react";
+import { GoogleGenerativeAI } from "@google/generative-ai"; // Correct import
+import { API_OPTIONS, gemini_key } from "../Utils/constants";
+import AiMovieCard from "./AiMovieCard";
 
 const GptSearchBar = () => {
   const searchText = useRef(null);
+  const [movieCards, setMovieCards] = useState([]); // State to store movie cards
+
+  // Search movie in TMDB
+  const searchMovie = async (movie) => {
+    const data = await fetch(
+      `https://api.themoviedb.org/3/search/movie?query=${movie}&include_adult=false&language=en-US&page=1`,
+      API_OPTIONS
+    );
+    const json = await data.json();
+    return json.results; // Return movie results
+  };
 
   const gptSearchClick = async () => {
     if (!searchText.current.value) return; // Prevent empty input
 
     try {
-      const gptResult = await Client.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: "You are a helpful movie recommendation assistant." },
-          { role: "user", content: searchText.current.value },
-        ],
-      });
+      const genAI = new GoogleGenerativeAI(gemini_key);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-      console.log(gptResult.choices[0].message.content); // Handle API response
+      const query = `You are a movie recommendation system. Your task is to provide a comma-separated list of sad Indian movie titles only. Do not include any descriptions, explanations, introductions, or any other text besides the movie titles themselves. Temperature should be low. Output only a comma-separated list. For example: Anand, Masaan, Peranbu. User's input: ${searchText.current.value}`;
+
+      const result = await model.generateContent(query);
+      const responseText = result.response.text(); // Extract response
+
+      // Convert to an array
+      const moviesArray = responseText.split(",").map((movie) => movie.trim());
+
+      // Search all movies in TMDB
+      const movieResults = await Promise.all(moviesArray.map((movie) => searchMovie(movie)));
+
+      // Flatten and map movie data
+      
+      
+
+      const flattenedMovies = movieResults.flat(); // Flatten nested arrays
+const movieCard = <AiMovieCard data={flattenedMovies} />;
+
+      
+      setMovieCards(movieCards); // Update state to render results
+
     } catch (error) {
       console.error("Error fetching GPT response:", error);
     }
   };
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex flex-col justify-center items-center">
       <form
         onSubmit={(e) => e.preventDefault()}
         className="flex space-x-4 bg-gray-900 p-4 rounded-xl shadow-lg border border-gray-700 mt-32"
@@ -43,6 +71,11 @@ const GptSearchBar = () => {
           <span className="relative">Search</span>
         </button>
       </form>
+
+      {/* Render movie cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        {movieCards.length > 0 ? movieCards : <p className="text-white">No movies found</p>}
+      </div>
     </div>
   );
 };
