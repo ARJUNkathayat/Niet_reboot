@@ -14,41 +14,58 @@ const GptSearchBar = () => {
       API_OPTIONS
     );
     const json = await data.json();
-    return json.results; // Return movie results
+    return json.results || []; // Return movie results (avoid undefined errors)
   };
 
   const gptSearchClick = async () => {
     if (!searchText.current.value) return; // Prevent empty input
-
+  
     try {
       const genAI = new GoogleGenerativeAI(gemini_key);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-
+  
       const query = `You are a movie recommendation system. Your task is to provide a comma-separated list of sad Indian movie titles only. Do not include any descriptions, explanations, introductions, or any other text besides the movie titles themselves. Temperature should be low. Output only a comma-separated list. For example: Anand, Masaan, Peranbu. User's input: ${searchText.current.value}`;
-
+  
       const result = await model.generateContent(query);
       const responseText = result.response.text(); // Extract response
-
+      console.log("ok", responseText);
+  
       // Convert to an array
       const moviesArray = responseText.split(",").map((movie) => movie.trim());
-
-      // Search all movies in TMDB
-      const movieResults = await Promise.all(moviesArray.map((movie) => searchMovie(movie)));
-
-      // Flatten and map movie data
-      
-      
-
-      const flattenedMovies = movieResults.flat(); // Flatten nested arrays
-const movieCard = <AiMovieCard data={flattenedMovies} />;
-
-      
-      setMovieCards(movieCards); // Update state to render results
-
+      console.log("first", moviesArray);
+  
+      // Fetch TMDB results and group under each AI title
+      const movieResults = await Promise.all(
+        moviesArray.map(async (movie) => {
+          const movies = await searchMovie(movie);
+          return { title: movie, movies: movies.slice(0, 5) }; // Group movies under each AI title
+        })
+      );
+  
+      console.log("Grouped Movies:", movieResults);
+  
+      // Create grouped movie cards
+      const movieCardsArray = movieResults.map((group, index) => (
+        <div key={index} className="w-full mb-6">
+          {/* Movie Title Header */}
+          <h2 className="text-2xl font-bold text-white mb-2">{group.title}</h2>
+          
+          {/* Movie Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+            {group.movies.map((movie, idx) => (
+              <AiMovieCard key={idx} title={movie.title} ove={movie.overview} img={movie.poster_path} />
+            ))}
+          </div>
+        </div>
+      ));
+  
+      setMovieCards(movieCardsArray); // Update state
     } catch (error) {
       console.error("Error fetching GPT response:", error);
     }
   };
+  
+  
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -73,9 +90,10 @@ const movieCard = <AiMovieCard data={flattenedMovies} />;
       </form>
 
       {/* Render movie cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        {movieCards.length > 0 ? movieCards : <p className="text-white">No movies found</p>}
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mt-8">
+  {movieCards.length > 0 ? movieCards : <p className="text-white">No movies found</p>}
+</div>
+
     </div>
   );
 };
