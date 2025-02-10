@@ -14,4 +14,16 @@
 .scrollbar-hidden::-webkit-scrollbar {
     display: none;
 }
+
+/* Hide scrollbar for horizontal scrolling */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE & Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+
   
