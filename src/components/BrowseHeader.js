@@ -18,24 +18,29 @@ const BrowseHeader = () => {
             console.error("Sign-out error:", error);
         });
     };
-    const handleGpt = ()=>{
+
+    const handleGpt = () => {
         dispatch(toggleGptSearchView());
-    }
+    };
 
     const user = useSelector((store) => store.user);
 
     return (
-        <div className="fixed top-0 w-full h-20 bg-gradient-to-b from-black to-transparent z-50 flex justify-between items-center px-10">
+        <div className="fixed top-0 w-full h-16 sm:h-20 bg-gradient-to-b from-black to-transparent z-50 flex justify-between items-center px-4 sm:px-10">
             {/* Netflix Logo */}
-            <img src={logo} alt="Netflix Logo" className="w-32 cursor-pointer" onClick={() => navigate('/')} />
+            <img src={logo} 
+                alt="Netflix Logo" 
+                className="w-24 sm:w-28 md:w-32 cursor-pointer transition-all duration-300" 
+                onClick={() => navigate('/')} 
+            />
 
             {/* Right Side: AI Recommendation, Profile & Sign Out */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-3 sm:space-x-6">
                 
-                {/* AI RECOMMENDATION Button */}
+                {/* AI RECOMMENDATION Button - Now visible on all screens */}
                 <div className="relative group">
                     <div className="absolute -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-lg blur-lg opacity-75 transition duration-300 group-hover:opacity-100 group-hover:scale-105"></div>
-                    <button onClick={handleGpt} className="relative px-6 py-3 text-white font-semibold bg-gray-900 rounded-lg transition duration-300 transform group-hover:scale-105">
+                    <button onClick={handleGpt} className="relative px-3 sm:px-6 py-2 text-xs sm:text-sm md:text-base text-white font-semibold bg-gray-900 rounded-lg transition duration-300 transform group-hover:scale-105">
                         AI RECOMMENDATION
                     </button>
                 </div>
@@ -43,17 +48,17 @@ const BrowseHeader = () => {
                 {/* User Profile */}
                 <div className="relative flex items-center cursor-pointer">
                     <img 
-                        className="w-12 h-12 rounded-md object-cover"
+                        className="w-10 sm:w-12 h-10 sm:h-12 rounded-md object-cover"
                         src="https://occ-0-6247-2164.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABdpkabKqQAxyWzo6QW_ZnPz1IZLqlmNfK-t4L1VIeV1DY00JhLo_LMVFp936keDxj-V5UELAVJrU--iUUY2MaDxQSSO-0qw.png?r=e6"
                         alt="User Profile"
                     />
-                    <h3 className="text-white ml-3 hidden sm:block">{user?.name}</h3>
+                    <h3 className="text-white ml-3 hidden md:block">{user?.name}</h3>
                 </div>
 
                 {/* Sign Out Button */}
                 <button 
                     onClick={handleSignOut} 
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition duration-300">
+                    className="bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-2 rounded-md transition duration-300 text-sm sm:text-base">
                     Sign Out
                 </button>
             </div>
