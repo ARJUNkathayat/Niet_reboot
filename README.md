@@ -1,6 +1,5 @@
 #Netflix -GPT
 Use create React App
-Some error coming using tailwind so use cdn of tailwind
 
-#Feature
-browse-page
+
+to use this first u need to install dependencies and also need to login first
